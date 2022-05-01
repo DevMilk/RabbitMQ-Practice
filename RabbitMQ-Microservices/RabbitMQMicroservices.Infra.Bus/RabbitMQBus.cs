@@ -25,6 +25,8 @@ namespace RabbitMQMicroservices.Infra.Bus
             _handlers = new Dictionary<string, List<Type>>();
             _eventTypes = new List<Type>();
         }
+        
+
         public Task SendCommand<T>(T command) where T : Command
         {
             return _mediator.Send(command);
@@ -47,7 +49,6 @@ namespace RabbitMQMicroservices.Infra.Bus
             }
 
         }
-        
         public void Subscribe<T, TH>()
             where T : Event
             where TH : IEventHandler<T>
@@ -76,6 +77,7 @@ namespace RabbitMQMicroservices.Infra.Bus
             StartBasicConsume<T>();
         }
 
+
         private void StartBasicConsume<T>() where T : Event
         {
             var factory = new ConnectionFactory()
@@ -97,7 +99,6 @@ namespace RabbitMQMicroservices.Infra.Bus
             channel.BasicConsume(eventName, true, consumer);
 
         }
-
         private async Task ConsumerReceived(object sender, BasicDeliverEventArgs e)
         {
             var eventName = e.RoutingKey;
@@ -112,7 +113,6 @@ namespace RabbitMQMicroservices.Infra.Bus
 
             }
         }
-
         private async Task ProcessEvent(string eventName, string message)
         {
             
