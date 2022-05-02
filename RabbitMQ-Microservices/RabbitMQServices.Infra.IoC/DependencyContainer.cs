@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using RabbitMQMicroservices.Banking.Application.Interfaces;
+using RabbitMQMicroservices.Banking.Application.Services;
+using RabbitMQMicroservices.Banking.Domain.Interfaces;
+using RabbitMQMicroservices.Banking.Infrastructure.Context;
+using RabbitMQMicroservices.Banking.Infrastructure.Repository;
 using RabbitMQMicroservices.Domain.Core.Bus;
 using RabbitMQMicroservices.Infra.Bus;
 using System;
@@ -15,6 +21,14 @@ namespace RabbitMQServices.Infra.IoC
         {
             //Bus
             services.AddTransient<IEventBus, RabbitMQBus>();
+            
+
+            //Application Services
+            services.AddTransient<IAccountService, AccountService>();
+
+            //Repository
+            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<BankingDbContext>();
         }
     }
 }
