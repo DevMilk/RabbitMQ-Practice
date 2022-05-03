@@ -8,4 +8,9 @@
     <ProjectReference Include="..\RabbitMQMicroservices.Banking.Domain\RabbitMQMicroservices.Banking.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

@@ -31,7 +31,7 @@ namespace RabbitMQMicroservices.Banking.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(Startup));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -46,7 +46,7 @@ namespace RabbitMQMicroservices.Banking.Api
             RegisterServices(services);
         }
 
-        private void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services)
         {
             DependencyContainer.RegisterServices(services);
         }

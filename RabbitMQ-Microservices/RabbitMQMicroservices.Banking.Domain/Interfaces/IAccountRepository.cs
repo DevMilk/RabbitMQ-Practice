@@ -9,6 +9,7 @@ namespace RabbitMQMicroservices.Banking.Domain.Interfaces
 {
     public interface IAccountRepository
     {
-        IEnumerable<Account> GetAccounts();
+        Task<IEnumerable<Account>> GetAccounts();
+        Task<Account> GetAccount(long id);
     }
 }

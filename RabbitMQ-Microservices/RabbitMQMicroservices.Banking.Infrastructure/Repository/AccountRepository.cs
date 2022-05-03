@@ -17,9 +17,13 @@ namespace RabbitMQMicroservices.Banking.Infrastructure.Repository
         {
             _ctx = ctx;
         }
-        public IEnumerable<Account> GetAccounts()
+        public async Task<IEnumerable<Account>> GetAccounts()
         {
             return _ctx.Accounts;
+        }
+        public async Task<Account> GetAccount(long id)
+        {
+            return await _ctx.Accounts.FindAsync(id);
         }
     }
 }

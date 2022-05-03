@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQMicroservices.Banking.Application.Interfaces;
-using RabbitMQMicroservices.Banking.Application.Services;
 using RabbitMQMicroservices.Banking.Domain.Interfaces;
 using RabbitMQMicroservices.Banking.Infrastructure.Context;
 using RabbitMQMicroservices.Banking.Infrastructure.Repository;
@@ -20,15 +18,16 @@ namespace RabbitMQServices.Infra.IoC
         public static void RegisterServices(IServiceCollection services)
         {
             //Bus
-            services.AddTransient<IEventBus, RabbitMQBus>();
+            services.AddScoped<IEventBus, RabbitMQBus>();
             
 
             //Application Services
-            services.AddTransient<IAccountService, AccountService>();
+            //services.AddTransient<IAccountService, AccountService>();
 
             //Repository
-            services.AddTransient<IAccountRepository, AccountRepository>();
-            services.AddTransient<BankingDbContext>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<BankingDbContext>();
+
         }
     }
 }

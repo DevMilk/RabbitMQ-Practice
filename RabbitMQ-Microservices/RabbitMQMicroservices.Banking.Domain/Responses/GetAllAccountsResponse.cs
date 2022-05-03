@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RabbitMQMicroservices.Banking.Application.Interfaces
+namespace RabbitMQMicroservices.Banking.Domain.Responses
 {
-    public interface IAccountService
+    public class GetAllAccountsResponse
     {
-        IEnumerable<Account> GetAccounts();
+        public IEnumerable<Account> Accounts { get; set; }
     }
 }
