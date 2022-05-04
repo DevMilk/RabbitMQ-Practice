@@ -16,7 +16,9 @@ namespace RabbitMQMicroservices.Infra.Bus
     public sealed class RabbitMQBus : IEventBus
     {
         private readonly IMediator _mediator;
+        //stores (eventName) and list of (Event) types
         private readonly Dictionary<string,List<Type>> _handlers;
+        //stores list of all (EventHandler) types
         private readonly List<Type> _eventTypes;
 
         public RabbitMQBus(IMediator mediator)
@@ -33,20 +35,18 @@ namespace RabbitMQMicroservices.Infra.Bus
         }
         public void Publish<T>(T @event) where T : Event
         {
+            var eventName = @event.GetType().Name;
+
             var factory = new ConnectionFactory() { HostName = "localhost" };
 
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                var eventName = @event.GetType().Name;
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
 
-                channel.QueueDeclare(eventName, false, false, false, null);
+            channel.QueueDeclare(eventName, false, false, false, null);
 
-                var message = JsonConvert.SerializeObject(@event);
-                var body = Encoding.UTF8.GetBytes(message);
+            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event));
 
-                channel.BasicPublish("", eventName, null, body);
-            }
+            channel.BasicPublish("", eventName, null, body);
 
         }
         public void Subscribe<T, TH>()
@@ -85,15 +85,16 @@ namespace RabbitMQMicroservices.Infra.Bus
                 HostName = "localhost",
                 DispatchConsumersAsync = true
             };
+            var eventName = typeof(T).Name;
 
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-            var eventName = typeof(T).Name;
-
             channel.QueueDeclare(eventName, false, false, false, null);
 
             var consumer = new AsyncEventingBasicConsumer(channel);
+
+            //When consumer receives message, ConsumerReceived Function will invoke
             consumer.Received += ConsumerReceived;
 
             channel.BasicConsume(eventName, true, consumer);
@@ -115,16 +116,22 @@ namespace RabbitMQMicroservices.Infra.Bus
         }
         private async Task ProcessEvent(string eventName, string message)
         {
-            
+            //Get EventHandler types by eventName
             if (_handlers.TryGetValue(eventName,out var subscriptions))
             {
                 foreach(var subscription in subscriptions)
                 {
+                    //create instance with type of event handler type (a.k.a subscription)
                     var handler = Activator.CreateInstance(subscription);
                     if (handler == null) continue;
+
+                    //get parameters for handler
                     var eventType = _eventTypes.SingleOrDefault(t => t.Name.Equals(eventName));
                     var @event = JsonConvert.DeserializeObject(message, eventType);
+
                     var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
+
+                    //invoke Handle function of concreteType with @event parameters
                     await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { @event });
                 }
             }

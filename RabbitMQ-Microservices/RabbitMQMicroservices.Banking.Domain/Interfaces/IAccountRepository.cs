@@ -11,5 +11,6 @@ namespace RabbitMQMicroservices.Banking.Domain.Interfaces
     {
         Task<IEnumerable<Account>> GetAccounts();
         Task<Account> GetAccount(long id);
+        void Transfer(AccountTransfer accountTransfer);
     }
 }

@@ -19,12 +19,18 @@ namespace RabbitMQMicroservices.Banking.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public ActionResult<GetAllAccountsResponse> GetAllAccounts([FromQuery] GetAllAccountsRequest request){
+        public ActionResult<GetAllAccountsResponse> AllAccounts([FromQuery] GetAllAccountsRequest request){
             return Ok(_mediator.Send(request));
         }
 
         [HttpGet]
-        public ActionResult<GetAccountResponse> GetAccount([FromQuery] GetAccountRequest request){
+        public ActionResult<GetAccountResponse> Account([FromQuery] GetAccountRequest request){
+            return Ok(_mediator.Send(request));
+        }
+
+        [HttpPost]
+        public ActionResult<PostAccountTransferResponse> AccountTransfer([FromBody] PostAccountTransferRequest request)
+        {
             return Ok(_mediator.Send(request));
         }
     }

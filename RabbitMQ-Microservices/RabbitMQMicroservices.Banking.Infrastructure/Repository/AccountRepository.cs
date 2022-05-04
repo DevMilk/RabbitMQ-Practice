@@ -25,5 +25,10 @@ namespace RabbitMQMicroservices.Banking.Infrastructure.Repository
         {
             return await _ctx.Accounts.FindAsync(id);
         }
+
+        public void Transfer(AccountTransfer accountTransfer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using RabbitMQMicroservices.Banking.Domain.CommandHandlers;
+using RabbitMQMicroservices.Banking.Domain.Commands;
 using RabbitMQMicroservices.Banking.Domain.Interfaces;
 using RabbitMQMicroservices.Banking.Infrastructure.Context;
 using RabbitMQMicroservices.Banking.Infrastructure.Repository;
@@ -19,7 +21,9 @@ namespace RabbitMQServices.Infra.IoC
         {
             //Bus
             services.AddScoped<IEventBus, RabbitMQBus>();
-            
+
+            //Domain Commands
+            services.AddScoped<IRequestHandler<CreateTransferCommand, bool>, TransferCommandHandler>();
 
             //Application Services
             //services.AddTransient<IAccountService, AccountService>();
